@@ -15,7 +15,15 @@
 	</style>
 </head>
 <body>
+
 	<?php
+session_start();
+
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+    header("location: create.php");
+    exit;
+}
+
 		require_once "db1.php";
 		$conn = DbHelper::GetConnection();
 		$user = null;
@@ -43,7 +51,7 @@
 			
 			
 			if(strlen($password) <= 0) {
-				$errors[] = "You must full password";
+				$errors[] = "You must fill password";
 			}
 			
 			
@@ -64,20 +72,22 @@
 			
 			if(empty($result)){
 				echo('No such user with this username!');
-				echo '<a href="login.php"> Try </a> again.';
+				echo '<a href="login.php"> Try again.</a> ';
 				die();
 			}
 			
 			$user = array_shift($result);
 			
 			if($user['username'] === $username && $user['password'] === $password){
+				$_SESSION["loggedin"] = true;
+
 				echo 'You have successfully logged in!' . "<br />";
 				echo '<a href="create.php"> Go to </a> Todo.';
 				
 			}
 		if($user['password'] !== $password || $user['username'] !== $username){
 				echo 'Wrong username or password!';
-				echo '<a href="login.php"> Try </a> again.';
+				echo '<a href="login.php"> Try again.</a> ';
 			}
 		}
 			else {
@@ -94,7 +104,7 @@
 		
 		
 		<input type="submit" name="btnSubmit" value="Login" />
-		<a href="register.php"> Registration </a>
+		<a href="register.php"><input type="button"  value="Registration">  </input> </a> 
 	</form>
 	<?php } ?>
 </body>

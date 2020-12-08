@@ -1,9 +1,15 @@
 <?php
+session_start();
+ 
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
 require_once 'db_connect.php';//bring the database connection file in
 if(isset($_POST['submit'])) {
     $title = $_POST['todoTitle'];// grap what was filled in title field
     $description = $_POST['todoDescription']; //grap what was filled in description field
-
+	$error = false;
     // check strings
     function check($string){
         $string  = htmlspecialchars($string);
@@ -17,26 +23,35 @@ if(isset($_POST['submit'])) {
     if(empty($title)){
         $error  = true;
         $titleErrorMsg = "Title cannot be empty";
+		echo $titleErrorMsg;
     }
     // check for empty description
     if(empty($description)){
         $error = true;
         $descriptionErrorMsg = "Description cannot be empty";
+		echo $descriptionErrorMsg;
     }
 
     // connect to database
     DbHelper::db();
     global $link;
     $query = "INSERT INTO todo(todoTitle, todoDescription, date) VALUES ('$title', '$description', now() )";
-    $insertTodo = mysqli_query($link, $query);
-    if($insertTodo){
-        echo "You added a new todo";
-    }else{
-        echo mysqli_error($link);
-    }
+	
+	
+	if($error == false){
+		
+    
+		$insertTodo = mysqli_query($link, $query);
+		 if($insertTodo){
+			echo "You added a new todo";
+		}else{
+			echo mysqli_error($link);
+		}
+	}
 
 }
 ?>
+
 
 <html>
 <head>
@@ -53,6 +68,6 @@ if(isset($_POST['submit'])) {
     <br>
     <input type="submit" name="submit" value="submit">
 </form>
-<a href="login.php"> Logout </a>
+<a href="logout.php"> Logout </a>
 </body>
 </html>

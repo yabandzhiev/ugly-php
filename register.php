@@ -74,6 +74,7 @@
 		</p>
 		<p>
 			<input type="submit" value="Register" name="btnSubmit" />
+			<a href="login.php"><input type="button" value="Back" /></a>
 		</p>
 	</form>
 </body>
